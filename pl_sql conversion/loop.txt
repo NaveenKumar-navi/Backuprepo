@@ -1,0 +1,16 @@
+---------------loop---------
+CREATE OR REPLACE PROCEDURE SELECT1(daily_value IN NUMBER,monthly_value IN OUT NUMBER)
+IS
+BEGIN 
+LOOP
+   monthly_value := daily_value * 31;
+   EXIT WHEN monthly_value > 4000;
+END LOOP;
+dbms_output.put_line('monthly_value'||monthly_value||'daily_value'||daily_value);
+END; 
+SET SERVEROUTPUT ON
+declare
+monthly_value number:=4000;
+BEGIN
+SELECT1(3000,monthly_value);
+END;

@@ -1,0 +1,26 @@
+--------Loop based on a query result Cursor--------
+CREATE TYPE emp_object AS OBJECT(
+emp_no NUMBER,
+emp_name VARCHAR2(50),
+years_of_experience NUMBER);
+/
+CREATE OR REPLACE TYPE emp_object_content is table of emp_object;
+/
+CREATE OR REPLACE function select3 
+RETURN  emp_object_content PIPELINED AS
+ vObj    emp_object := emp_object(NULL,NULL,NULL); 
+  cursor emp is 
+ select * from employees where name is not null;
+ emp_rec emp%rowtype;
+ TOT_REC NUMBER;
+begin
+for i in EMP
+LOOP 
+vobj.emp_no         := i.id;
+vobj.emp_name     := i.name;
+vobj.years_of_experience   := extract(year from sysdate)-extract(year from i.dob);
+pipe row ( vobj );
+END LOOP; 
+end;
+
+SELECT * FROM TABLE (select3 ());

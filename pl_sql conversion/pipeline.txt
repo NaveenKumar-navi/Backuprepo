@@ -1,0 +1,27 @@
+-----object,table of,pipelined in cursor--------------------
+CREATE TYPE emp_object AS OBJECT(
+emp_no NUMBER,
+emp_name VARCHAR2(50),
+years_of_experience NUMBER);
+/
+CREATE OR REPLACE TYPE emp_object_content is table of emp_object;
+/
+CREATE OR REPLACE function select2 
+RETURN  emp_object_content PIPELINED AS
+ vObj    emp_object := emp_object(NULL,NULL,NULL); 
+ cursor emp is 
+ select * from employees where name is not null;
+ emp_rec emp%rowtype;
+ begin
+ open emp;
+  LOOP fetch emp into emp_rec;
+  EXIT WHEN emp%NOTFOUND;
+vobj.emp_no         := emp_rec.id;
+vobj.emp_name     := emp_rec.name;
+vobj.years_of_experience   := extract(year from sysdate)-extract(year from emp_rec.dob);
+pipe row ( vobj );
+END LOOP; 
+close emp;
+end;
+
+SELECT * FROM TABLE (select2 ());

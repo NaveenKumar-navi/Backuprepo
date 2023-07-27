@@ -1,0 +1,15 @@
+-----------------------CASE2---------------------------
+CREATE OR REPLACE PROCEDURE SELECT1
+IS
+BEGIN
+UPDATE SALARY S SET SAL=SAL+(SELECT CASE WHEN DESIGNATION='MANAGER' THEN 1000
+                                    WHEN DESIGNATION='TEAM LEAD' THEN 50
+                                    ELSE 25 END
+                                    FROM EMPLOYEES E
+                                    WHERE E.ID=S.ID);
+END;
+BEGIN
+SELECT1;
+END;
+SELECT * FROM EMPLOYEES;
+SELECT * FROM SALARY;
